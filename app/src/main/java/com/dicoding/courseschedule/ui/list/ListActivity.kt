@@ -16,6 +16,9 @@ import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.data.Course
 import com.dicoding.courseschedule.paging.CourseAdapter
 import com.dicoding.courseschedule.paging.CourseViewHolder
+import com.dicoding.courseschedule.ui.add.AddCourseActivity
+import com.dicoding.courseschedule.ui.detail.DetailActivity
+import com.dicoding.courseschedule.ui.detail.DetailActivity.Companion.COURSE_ID
 import com.dicoding.courseschedule.ui.setting.SettingsActivity
 import com.dicoding.courseschedule.util.SortType
 
@@ -50,6 +53,9 @@ class ListActivity : AppCompatActivity() {
 
     private fun onCourseClick(course: Course) {
         //TODO 8 : Intent and show detailed course
+        val detailIntent = Intent(this, DetailActivity::class.java)
+        detailIntent.putExtra(COURSE_ID, course.id)
+        startActivity(detailIntent)
     }
 
     private fun initAction() {
@@ -69,6 +75,8 @@ class ListActivity : AppCompatActivity() {
 
     private fun setFabClick() {
         //TODO 9 : Create AddCourseActivity to set new course schedule
+        val addIntent = Intent(this, AddCourseActivity::class.java)
+        startActivity(addIntent)
     }
 
     //TODO 14 : Fixing bug : sort menu not show and course not deleted when list is swiped
@@ -129,7 +137,7 @@ class ListActivity : AppCompatActivity() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val course = (viewHolder as CourseViewHolder).getCourse()
-
+            viewModel.delete(course)
         }
     }
 }
