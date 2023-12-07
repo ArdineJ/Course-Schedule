@@ -1,11 +1,13 @@
 package com.dicoding.courseschedule.notification
 
 import android.app.AlarmManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.data.Course
@@ -13,6 +15,7 @@ import com.dicoding.courseschedule.data.DataRepository
 import com.dicoding.courseschedule.ui.home.HomeActivity
 import com.dicoding.courseschedule.util.ID_REPEATING
 import com.dicoding.courseschedule.util.NOTIFICATION_CHANNEL_ID
+import com.dicoding.courseschedule.util.NOTIFICATION_CHANNEL_NAME
 import com.dicoding.courseschedule.util.NOTIFICATION_ID
 import com.dicoding.courseschedule.util.executeThread
 import java.util.Calendar
@@ -79,17 +82,26 @@ class DailyReminder : BroadcastReceiver() {
             notificationStyle.addLine(courseData)
         }
 
-        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notifications)
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val channelId = NOTIFICATION_CHANNEL_ID
+        val channelName = NOTIFICATION_CHANNEL_NAME
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, channelName, importance)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentIntent(getPendingIntent(context))
             .setContentTitle(context.getString(R.string.today_schedule))
             .setContentText(context.getString(R.string.notification_message_format))
+            .setSmallIcon(R.drawable.ic_notifications)
+            .setAutoCancel(true)
             .setStyle(notificationStyle)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(getPendingIntent(context))
-            .setAutoCancel(true)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 

@@ -20,10 +20,10 @@ interface CourseDao {
     @RawQuery(observedEntities = [Course::class])
     fun getAll(query: SupportSQLiteQuery): DataSource.Factory<Int, Course>
 
-    @Query("SELECT * FROM courses WHERE id = :id")
+    @Query("SELECT * FROM course WHERE id = :id")
     fun getCourse(id: Int): LiveData<Course>
 
-    @Query("SELECT * FROM courses WHERE day = :day")
+    @Query("SELECT * FROM course WHERE day = :day")
     fun getTodaySchedule(day: Int): List<Course>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

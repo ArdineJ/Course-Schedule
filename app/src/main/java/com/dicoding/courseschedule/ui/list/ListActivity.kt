@@ -21,6 +21,7 @@ import com.dicoding.courseschedule.ui.detail.DetailActivity
 import com.dicoding.courseschedule.ui.detail.DetailActivity.Companion.COURSE_ID
 import com.dicoding.courseschedule.ui.setting.SettingsActivity
 import com.dicoding.courseschedule.util.SortType
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ListActivity : AppCompatActivity() {
 
@@ -37,7 +38,7 @@ class ListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val factory = ListViewModelFactory.createFactory(this)
-        viewModel = ViewModelProvider(this, factory).get(ListViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[ListViewModel::class.java]
 
         setFabClick()
         setUpRecycler()
@@ -75,8 +76,11 @@ class ListActivity : AppCompatActivity() {
 
     private fun setFabClick() {
         //TODO 9 : Create AddCourseActivity to set new course schedule
-        val addIntent = Intent(this, AddCourseActivity::class.java)
-        startActivity(addIntent)
+        val fabBtn = findViewById<FloatingActionButton>(R.id.fab)
+        fabBtn.setOnClickListener{
+            val addIntent = Intent(this, AddCourseActivity::class.java)
+            startActivity(addIntent)
+        }
     }
 
     //TODO 14 : Fixing bug : sort menu not show and course not deleted when list is swiped
@@ -107,6 +111,7 @@ class ListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort -> {
+                showSortMenu()
                 true
             }
             R.id.action_settings -> {
