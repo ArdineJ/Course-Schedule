@@ -1,13 +1,13 @@
 package com.dicoding.courseschedule.ui.setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.notification.DailyReminder
-import com.dicoding.courseschedule.util.NightMode
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -16,13 +16,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //TODO 10 : Update theme based on value in ListPreference
         val prefTheme = findPreference<ListPreference>(getString(R.string.pref_key_dark))
         prefTheme?.setOnPreferenceChangeListener { _, newValue ->
-            val nightMode =
-                when((newValue as String).uppercase()){
-                    NightMode.ON.name -> NightMode.ON
-                    NightMode.OFF.name -> NightMode.OFF
-                    else -> NightMode.AUTO
-                }
-            updateTheme(nightMode.value)
+            when(newValue.toString()){
+                getString(R.string.pref_dark_on) -> updateTheme(AppCompatDelegate.MODE_NIGHT_YES)
+                getString(R.string.pref_dark_off) -> updateTheme(AppCompatDelegate.MODE_NIGHT_NO)
+                getString(R.string.pref_dark_auto) -> updateTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
             true
         }
 
@@ -30,11 +28,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefNotification = findPreference<SwitchPreference>(getString(R.string.pref_key_notify))
         val dailyReminder = DailyReminder()
         prefNotification?.setOnPreferenceChangeListener { _, switchValue ->
-            val notficationEnabled :Boolean = switchValue as Boolean
-            if (notficationEnabled){
-                context?.let { dailyReminder.setDailyReminder(it) }
-            } else {
-                context?.let { dailyReminder.cancelAlarm(it) }
+            val value = switchValue as Boolean
+            Log.d("NOTIP VALUE", "$value")
+
+            if (value) {
+                Log.d("NOTIP ONGOING", "1")
+                dailyReminder.setDailyReminder(requireContext())
+            } else{
+                dailyReminder.cancelAlarm(requireContext())
             }
             true
         }

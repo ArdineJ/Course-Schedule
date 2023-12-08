@@ -32,10 +32,9 @@ class HomeActivity : AppCompatActivity() {
 
         val factory = ListViewModelFactory.createFactory(this)
         viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
-        viewModel.getNearestSchedule.observe(this) {
-            showTodaySchedule(it)
+        viewModel.getNearestSchedule.observe(this) {course ->
+            showTodaySchedule(course)
         }
-
     }
 
     private fun showTodaySchedule(course: Course?) {
