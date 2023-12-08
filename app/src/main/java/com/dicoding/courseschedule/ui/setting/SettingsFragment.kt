@@ -1,7 +1,6 @@
 package com.dicoding.courseschedule.ui.setting
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -29,10 +28,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val dailyReminder = DailyReminder()
         prefNotification?.setOnPreferenceChangeListener { _, switchValue ->
             val value = switchValue as Boolean
-            Log.d("NOTIP VALUE", "$value")
 
             if (value) {
-                Log.d("NOTIP ONGOING", "1")
                 dailyReminder.setDailyReminder(requireContext())
             } else{
                 dailyReminder.cancelAlarm(requireContext())

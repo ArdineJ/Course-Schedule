@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -29,11 +28,7 @@ import java.util.Calendar
 class DailyReminder : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("NOTIP", "35")
-
         executeThread {
-            Log.d("NOTIP", "2")
-
             val repository = DataRepository.getInstance(context)
             val courses = repository?.getTodaySchedule()
 
@@ -45,7 +40,6 @@ class DailyReminder : BroadcastReceiver() {
 
     //TODO 12 : Implement daily reminder for every 06.00 a.m using AlarmManager
     fun setDailyReminder(context: Context) {
-        Log.d("NOTIP", "1.5")
         if (checkPermission(context)){
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context, DailyReminder::class.java)
@@ -92,7 +86,6 @@ class DailyReminder : BroadcastReceiver() {
 
     private fun showNotification(context: Context, content: List<Course>) {
         //TODO 13 : Show today schedules in inbox style notification & open HomeActivity when notification tapped
-        Log.d("notip", "4.5")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notificationStyle = NotificationCompat.InboxStyle()
@@ -102,16 +95,13 @@ class DailyReminder : BroadcastReceiver() {
             notificationStyle.addLine(courseData)
         }
 
-//        val intent = Intent(context, HomeActivity::class.java)
-//        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-
         val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(context.getString(R.string.today_schedule))
             .setContentText(context.getString(R.string.notification_message_format))
             .setStyle(notificationStyle)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(getNotifIntent(context))
+            .setContentIntent(getNotificationIntent(context))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -124,10 +114,9 @@ class DailyReminder : BroadcastReceiver() {
         }
 
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
-        Log.d("notip", "6")
     }
 
-    private fun getNotifIntent(context: Context): PendingIntent? {
+    private fun getNotificationIntent(context: Context): PendingIntent? {
         val intent = Intent(context, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
