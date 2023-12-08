@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.ui.list.ListViewModelFactory
@@ -30,6 +31,20 @@ class AddCourseActivity : AppCompatActivity(), TimePickerFragment.DialogTimeList
         val factory = ListViewModelFactory.createFactory(this)
         viewModel = ViewModelProvider(this, factory)[AddCourseViewModel::class.java]
 
+        viewModel.saved.observe(this) {
+            val saved = it.getContentIfNotHandled() ?: false
+            if (saved) {
+                Toast.makeText(this, "Course Saved", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this, "Form must not empty", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
