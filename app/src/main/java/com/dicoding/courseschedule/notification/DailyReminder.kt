@@ -45,7 +45,7 @@ class DailyReminder : BroadcastReceiver() {
             val intent = Intent(context, DailyReminder::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                100,
+                0,
                 intent,
                 PendingIntent.FLAG_IMMUTABLE
             )
@@ -56,7 +56,7 @@ class DailyReminder : BroadcastReceiver() {
                 set(Calendar.SECOND, 0)
             }
 
-            alarmManager.setRepeating(
+            alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
@@ -98,7 +98,9 @@ class DailyReminder : BroadcastReceiver() {
         val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(context.getString(R.string.today_schedule))
-            .setContentText(context.getString(R.string.notification_message_format))
+//            .setContentText(content.toString())
+//            .setContentText(context.getString(R.string.notification_message_format,"test1","test2","test3"))
+//            .setContentText(context.getString(R.string.notification_message_format))
             .setStyle(notificationStyle)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(getNotificationIntent(context))
